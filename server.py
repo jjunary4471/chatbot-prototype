@@ -13,7 +13,7 @@ SLACK_WEBHOOK_URL = "https://hooks.slack.com/services/T089A8VPK7V/B08A7USJ9PA/Pf
 
 def send_slack_alert():
     payload = {
-        "text": "⚠️ 스트레스 경고: 스트레스 인자가 높은 값입니다!",
+        "text": "⚠️ ストレス警告:ストレス因子が高いです!",
         "username": "StressAlertBot",
         "icon_emoji": ":warning:"
     }
@@ -27,9 +27,9 @@ def send_slack_alert():
 
 # 미답변 질문 리스트
 questions_db = [
-    {"id": 1, "question": "당신의 가장 큰 고민은 무엇인가요?", "answered": False},
-    {"id": 2, "question": "당신이 가장 좋아하는 과목은 무엇인가요?", "answered": False},
-    {"id": 3, "question": "최근 학교 생활은 어떤가요?", "answered": False},
+    {"id": 1, "question": "最近趣味はなんですか?", "answered": False},
+    {"id": 2, "question": "最近一番仲のいい友達は誰ですか?", "answered": False},
+    {"id": 3, "question": "今一番楽しめるのはなんですか?", "answered": False},
 ]
 
 # 동적으로 설문 데이터 생성
@@ -39,7 +39,7 @@ def generate_survey_data(sections, questions_per_section):
         section_questions = [
             {
                 "QuestionId": f"{section_id}-{question_id}",
-                "QuestionText": f"{section_name} 질문 {question_id}"
+                "QuestionText": f"{section_name} 質問 {question_id}"
             }
             for question_id in range(1, questions_per_section + 1)
         ]
@@ -47,7 +47,7 @@ def generate_survey_data(sections, questions_per_section):
     return survey_sections
 
 # 설문 데이터 생성
-SECTIONS = ["A인자", "B인자", "C인자", "D인자", "E인자", "스트레스인자"]
+SECTIONS = ["A因子", "B因子", "C因子", "D因子", "E因子", "ストレス因子"]
 QUESTIONS_PER_SECTION = 10
 SURVEY_SECTIONS = generate_survey_data(SECTIONS, QUESTIONS_PER_SECTION)
 
@@ -69,30 +69,30 @@ def submit_survey():
         return jsonify({"success": False, "message": "잘못된 데이터입니다."}), 400
 
     # 기본 타입 산출
-    a, b, c, d, e, stress = scores.get("A인자", 0), scores.get("B인자", 0), scores.get("C인자", 0), scores.get("D인자", 0), scores.get("E인자", 0), scores.get("스트레스인자", 0)
+    a, b, c, d, e, stress = scores.get("A因子", 0), scores.get("B因子", 0), scores.get("C因子", 0), scores.get("D因子", 0), scores.get("E因子", 0), scores.get("ストレス因子", 0)
 
     basic_type = None
     if a < 5 and b >= 5 and c >= 5 and d >= 5 and e < 5:
-        basic_type = "사쿠라"
+        basic_type = "さくら"
     elif a >= 5 and b < 5 and c >= 5 and d >= 5 and e < 5:
-        basic_type = "우메"
+        basic_type = "うめ"
     elif a < 5 and b < 5 and c >= 5 and d < 5 and e >= 5:
-        basic_type = "모모"
+        basic_type = "もも"
     elif a >= 5 and b < 5 and c >= 5 and d < 5 and e >= 5:
-        basic_type = "스모모"
+        basic_type = "すもも"
 
     # 추가 타입 산출
     additional_type = None
     if c > (QUESTIONS_PER_SECTION // 2):
-        additional_type = "디지털"
+        additional_type = "デジタル"
     elif c <= 10:
-        additional_type = "아날로그"
+        additional_type = "アナログ"
 
     # 타입 결과 출력
-    print(f"기본 타입: {basic_type}")
-    print(f"추가 타입: {additional_type}")
+    print(f"基本 タイプ: {basic_type}")
+    print(f"追加 タイプ: {additional_type}")
 
-    # 스트레스 경고 메일 전송
+    # ストレス 경고 메일 전송
     if stress >= 5:
         send_slack_alert()
 
@@ -106,7 +106,7 @@ def chat():
         user_question = data.get("question", "")
 
         if not user_question:
-            return jsonify({"answer": "질문을 입력해주세요."}), 400
+            return jsonify({"answer": "質問を入力してください."}), 400
 
 
         # ChatGPT 응답 가져오기
