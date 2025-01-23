@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
@@ -49,6 +50,10 @@ def generate_survey_data(sections, questions_per_section):
 SECTIONS = ["A인자", "B인자", "C인자", "D인자", "E인자", "스트레스인자"]
 QUESTIONS_PER_SECTION = 10
 SURVEY_SECTIONS = generate_survey_data(SECTIONS, QUESTIONS_PER_SECTION)
+
+@app.route("/")
+def home():
+    return "서버가 정상적으로 실행 중입니다!"
 
 @app.route("/survey", methods=["GET"])
 def get_survey():
@@ -138,7 +143,8 @@ def save_answer():
 
     return jsonify({"success": False, "message": "질문을 찾을 수 없습니다."}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Render 환경에서 제공되는 PORT 환경 변수 사용
+    app.run(host="0.0.0.0", port=port)
 
 
